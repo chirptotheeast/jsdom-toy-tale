@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
     getToy()
+
+    document.querySelector('form').addEventListener('submit', (event) => {
+      createAToy(event)
+  
+    })
+
+
+
 });
 
 function getToy(){
@@ -34,6 +42,7 @@ function renderToy(toy){
 
    let card = document.createElement('div')
       card.classList.add('card')
+      console.log(card)
    
    let h2 = document.createElement('h2') 
       h2.innerText = toy.name
@@ -43,23 +52,65 @@ function renderToy(toy){
       img.src = toy.image
 
 
-   let p = document.createElement('p')
-      p.innerText = toy.likes
+   let newLikes = document.createElement('p')
+      let tlikes = toy.likes
+     if (tlikes === undefined){
+       tlikes = 0
+     }
+      // p.innerText = 0 + " likes"
+
+      newLikes.innerText= tlikes + " likes"
+      // if (toy.likes === undefined){
+      //   return toy.likes = 0
+      // }
 
    let button = document.createElement('button')
       button.classList.add('like-btn')
       button.innerText = "Like"
 
-      card.append(h2, img, p, button)
+     button.addEventListener("click", (event) => {
+        // console.log(event.target)
+          // if (event.target){
+          //   tlikes += 1
+          // }
+
+            let likeTracker = document.querySelector("newLikes")
+           
+            num = parseInt(newLikes.innerText)
+            num += 1
+            newLikes.innerText = num + " likes"
+     } )
+
+      card.append(h2, img, newLikes, button)
       toyBox.appendChild(card)
       // toyBox.append(card, h2, img, p, button)
-      console.log(toyBox)
+     document.querySelector('form').reset()
 }
 
-// Add Toy Info to the Card
-// Each card should have the following child elements:
+  
 
-// h2 tag with the toy's name
-// img tag with the src of the toy's image attribute and the class name "toy-avatar"
-// p tag with how many likes that toy has
-// button tag with a class "like-btn"
+
+  function createAToy(event){
+    event.preventDefault() // means when we click submit it's going to do something 
+
+    let data = {
+      name: event.target.name.value,
+      image: event.target.image.value
+    }
+    
+      let reqObj = {}
+
+        reqObj.method = "POST"
+        reqObj.headers ={"Content-Type": "application/json"}
+        reqObj.body = JSON.stringify(data)
+
+      fetch(URL, reqObj)
+        .then(res => res.json())
+        .then(data => renderToy(data))
+
+  }
+
+  // function addLikes(event){
+  //   event.preventDefault()
+
+  // }
